@@ -43,7 +43,12 @@ What started as my curiosity with computer graphics solidified into ideas that b
 <img align="left" src="https://github.com/jakewebber/HighWire3D/blob/master/res/LineSelect.png" width="30" height="30">
 <b>Select Wires</b> individually, across different objects. This will turn wires from white to red and unaffected by subsequent transformations to the scene. 
 </p><p>
-<img align="left" src="https://github.com/jakewebber/HighWire3D/blob/master/res/ObjectSelect.png" width="30" height="30">
+<img align="left" src="https://github.com/jakewebber/HighWire3D/blob/master/res/ObjectSelect.png" width="27" height="27">
 <b>Select Objects</b> as a whole to be editable or not. Imported scenes count as entire objects. 
+</p><p>
+<img align="left" src="https://github.com/jakewebber/HighWire3D/blob/master/res/selectAllNon.png" width="27" height="27">
+<b>Select All</b> wires in the scene to be editable or not. 
+
+#Key Shortcuts
 
 ![Alt text](https://raw.githubusercontent.com/jakewebber/HighWire3D/master/houserotation.gif?raw=true "Demo")
