@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -40,8 +41,11 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.Line2D;
 import java.beans.PropertyVetoException;
 
@@ -69,6 +73,7 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
 import Jama.Matrix;
+import javafx.scene.input.KeyCode;
 
 public class HighWire extends JPanel{
 	public HighWire() {
@@ -86,13 +91,20 @@ public class HighWire extends JPanel{
 	public static boolean firstTrans = true;
 	public static boolean perspectiveProjection = true;
 	public static boolean selectObject = true;
+	public static boolean selectAll = true;
 	public static boolean delete = false;
+	public static boolean enableDrag = true;
+	public static boolean moveZAxis = false;
 	public static Timer timer;
 	public static 		JFileChooser chooser = new JFileChooser();
 	public static ImageIcon perspectiveIcon;
 	public static ImageIcon parallelIcon;
 	public static ImageIcon lineSelectIcon;
 	public static ImageIcon objectSelectIcon;
+	public static ImageIcon eraserIcon;
+	public static ImageIcon eraserSelectedIcon;
+	public static ImageIcon selectAllNonIcon;
+	public static ImageIcon selectAllIcon;
 
 
 	public static JButton depthImage = new JButton();
@@ -104,6 +116,7 @@ public class HighWire extends JPanel{
 	public static boolean closeDepthDialog = false;
 	public static ArrayList<Integer> history = new ArrayList<Integer>();
 	public static ArrayList<Boolean> linesHighlight = new ArrayList<Boolean>();
+	public static Image eraserImage = new ImageIcon(HighWire.class.getResource("/eraser.png")).getImage();
 
 	private static final int HIT_BOX_SIZE = 3;
 
@@ -111,6 +124,13 @@ public class HighWire extends JPanel{
 	public static int xRotation = 0;
 	public static int yRotation = 0;
 	public static int zRotation = 0;
+
+	public static int mousex;
+	public static int mousey;
+	public static int pressmousex;
+	public static int pressmousey;
+	public static int dragmousex;
+	public static int dragmousey;
 
 	public static Matrix transformationMatrix = new Matrix(new double[][]{
 		{0, 0, 0, 0},
@@ -136,12 +156,15 @@ public class HighWire extends JPanel{
 	 * coordinates or drawfileswitch a set number of lines to draw. */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.setColor(Color.white);
+		g.setColor(Color.white);		
 		/* Draw XY coordinate system */
 		Dimension panelDimensions = scan.getSize();
 		int width = panelDimensions.width;
 		int height = panelDimensions.height;
-		g.translate(width/2, height/2);
+		g.translate(width/2, height/2);		
+		if(delete && mousex > -width/2 && mousex < width/2 && mousey > -height/2 && mousey < height/2){
+			g.drawImage(eraserImage, mousex, mousey, null );
+		}
 		g.drawString(String.valueOf(height/2), 0, -(height/2)+10 );
 		if(width < 1000){
 			g.drawString(String.valueOf(width/2), (width/2)-20, 0);
@@ -166,11 +189,6 @@ public class HighWire extends JPanel{
 			g.drawRect(vx1, vy1, vx2-1, vy2-1);
 
 		}
-		/*
-		if(drawfileswitch == true){
-			TransformPackage.applyTransformation(transformationMatrix, lines);
-			drawfileswitch = false;
-		}*/
 		lines2D.clear();
 		for(int i = 0; i < lines.size(); i++){
 			Line line = lines.get(i);
@@ -193,7 +211,6 @@ public class HighWire extends JPanel{
 			g.drawLine(x1, -y1, x2, -y2);
 			lines2D.add(new Line2D.Float(x1, -y1, x2, -y2)); //coordinates for visual representation of line
 		}
-
 	}
 
 	public static boolean isDouble(String input) {
@@ -227,12 +244,14 @@ public class HighWire extends JPanel{
 		frame.add(southPanel, BorderLayout.SOUTH);
 		frame.add(eastPanel, BorderLayout.EAST);
 
-		/* Wire selection mouse listener */
+		/* ------- Mouse click listener ------------ */
 		scan.addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent e) {
 				Dimension panelDimensions = scan.getSize();
-				int wchange= panelDimensions.width / 2;
-				int hchange= panelDimensions.height / 2;
+				int wchange = panelDimensions.width / 2;
+				int hchange = panelDimensions.height / 2;
+				dragmousex = e.getPoint().x - wchange;
+				dragmousey = e.getPoint().y - hchange;
 				int x = (int) ((e.getPoint().x - wchange) - HIT_BOX_SIZE / 2);
 				int y = (int) ((e.getPoint().y - hchange) - HIT_BOX_SIZE / 2);
 				int width = HIT_BOX_SIZE;
@@ -247,6 +266,7 @@ public class HighWire extends JPanel{
 						Line line = lines.get(i);
 						Line2D line2D = lines2D.get(i);
 						if(line2D.intersects(rect)){ //Line clicked
+							enableDrag = false;
 							lineIsEditable = line.isEditable;
 							int j = 0;
 							while(upperBound <= i){
@@ -254,14 +274,21 @@ public class HighWire extends JPanel{
 								j++;
 							}
 							lowerBound = upperBound - history.get(j-1);
+							if(delete){
+								history.remove(j-1);
+							}
 							i = lines.size();
 						}
 					}
-					for(int i = lowerBound; i < upperBound; i++){
-						Line line = lines.get(i);
-
-						line.isEditable = !lineIsEditable;
-						lines.set(i, line);
+					for(int i = upperBound-1; i >= lowerBound; i--){
+						if(delete){
+							lines.remove(i);
+							lines2D.remove(i);
+						}else{
+							Line line = lines.get(i);
+							line.isEditable = !lineIsEditable;
+							lines.set(i, line);
+						}
 					}
 					scan.repaint();
 				}else{ //Selecting Individual lines
@@ -269,25 +296,87 @@ public class HighWire extends JPanel{
 						Line line = lines.get(i);
 						Line2D line2D = lines2D.get(i);
 						if(line2D.intersects(rect)){ //Line clicked
+							enableDrag = false;
 							lineIsEditable = line.isEditable;
 							int j = 0;
-							if(selectObject){
+							if(delete){
 								while(upperBound <= i){
 									upperBound += history.get(j);
 									j++;
 								}
-								lowerBound = upperBound - history.get(j-1);
-							}
-							if(!selectObject){ //Make single line clicks
+								if(history.get(j-1) > 1){
+									history.set(j-1, history.get(j-1)-1);
+								}else{
+									history.remove(j-1);
+								}
+								lines.remove(i);
+								lines2D.remove(i);
+							}else{
 								line.isEditable = !line.isEditable;
 								lines.set(i, line);
-								scan.repaint();
 							}
+							scan.repaint();
 						}
 					}
-				}
+				} //end of individual line selection
 			}//end of actionListener
+			public void mouseReleased(MouseEvent e){
+				enableDrag = true;
+			}
 		});
+
+		/* ------- Mouse movement listener ------------ */
+		scan.addMouseMotionListener(new MouseAdapter(){
+			public void mouseMoved(MouseEvent e) { // Following mouse movement
+				Dimension panelDimensions = scan.getSize();
+				int wchange= panelDimensions.width / 2;
+				int hchange= panelDimensions.height / 2;
+				mousex = (int) ((e.getPoint().x - wchange)) - 2;
+				mousey = (int) ((e.getPoint().y - hchange)) - 25;
+				scan.repaint();
+			}
+			public void mouseDragged(MouseEvent e){
+				Dimension panelDimensions = scan.getSize();
+				int wchange= panelDimensions.width / 2;
+				int hchange= panelDimensions.height / 2;
+				if(!delete && enableDrag && SwingUtilities.isLeftMouseButton(e)){
+					if(e.isControlDown()){
+						TransformPackage.applyTransformation(TransformPackage.translate3D(0, 0, -(e.getPoint().y - hchange - dragmousey)), lines);
+					}else{
+						TransformPackage.applyTransformation(TransformPackage.translate3D(e.getPoint().x - wchange - dragmousex, 0, 0), lines);
+						TransformPackage.applyTransformation(TransformPackage.translate3D(0, -(e.getPoint().y - hchange - dragmousey), 0), lines);
+					}
+				}else if(!delete && enableDrag && SwingUtilities.isRightMouseButton(e)){
+					if(e.isControlDown()){
+						TransformPackage.applyTransformation(TransformPackage.rotate3D((e.getPoint().y - hchange - dragmousey), 'z'), lines);
+					}else{
+						TransformPackage.applyTransformation(TransformPackage.rotate3D((e.getPoint().y - hchange - dragmousey), 'x'), lines);
+						TransformPackage.applyTransformation(TransformPackage.rotate3D((e.getPoint().x - wchange - dragmousex), 'y'), lines);
+					}
+				}
+				dragmousex = e.getPoint().x - wchange;
+				dragmousey = e.getPoint().y - hchange;
+				scan.repaint();
+			}
+		});
+		scan.addMouseWheelListener(new MouseWheelListener(){
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				if(!delete){
+					if(e.getWheelRotation() > 0){
+						TransformPackage.applyTransformation(TransformPackage.scale3D(1.05, 1, 1), lines);
+						TransformPackage.applyTransformation(TransformPackage.scale3D(1, 1.05, 1), lines);
+						TransformPackage.applyTransformation(TransformPackage.scale3D(1, 1, 1.05), lines);
+					}else{
+						TransformPackage.applyTransformation(TransformPackage.scale3D(.95, 1, 1), lines);
+						TransformPackage.applyTransformation(TransformPackage.scale3D(1, .95, 1), lines);
+						TransformPackage.applyTransformation(TransformPackage.scale3D(1, 1, .95), lines);
+					}
+				}
+				scan.repaint();
+			}
+
+		});
+
 		scan.setBackground(Color.darkGray);
 		scan.setOpaque(true);
 
@@ -534,7 +623,7 @@ public class HighWire extends JPanel{
 			public void actionPerformed(ActionEvent arg0) {
 
 			if(sxField.getText().isEmpty() || syField.getText().isEmpty() || szField.getText().isEmpty() 
-				|| !isDouble(sxField.getText()) || !isDouble(syField.getText()) || !isDouble(szField.getText()) 
+					|| !isDouble(sxField.getText()) || !isDouble(syField.getText()) || !isDouble(szField.getText()) 
 					|| (sxField.getText().equalsIgnoreCase("0") && syField.getText().equalsIgnoreCase("0") && szField.getText().equalsIgnoreCase("0"))){
 				System.out.println("No valid scaling from input");
 			}else{
@@ -812,13 +901,14 @@ public class HighWire extends JPanel{
 			}
 		});    
 
-
 		/* Creating Main ToolBar*/
 		JToolBar toolbar = new JToolBar("Menu");
 		JButton importButton = null;
 		JButton exportButton = null;
 		JButton undoButton =  new JButton(new ImageIcon(HighWire.class.getResource("/Undo.png")));
 		JButton selectButton = new JButton(new ImageIcon(HighWire.class.getResource("/LineSelect.png")));
+		JButton selectAllButton = new JButton(new ImageIcon(HighWire.class.getResource("/selectAllNon.png")));
+		JButton eraserButton = new JButton(new ImageIcon(HighWire.class.getResource("/eraserDeselectIcon.png")));
 		/* Creating Menu Bar*/
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
@@ -832,6 +922,8 @@ public class HighWire extends JPanel{
 		JRadioButtonMenuItem perspectiveItem = new JRadioButtonMenuItem("Perspective Projection");
 		JRadioButtonMenuItem lineSelectItem = new JRadioButtonMenuItem("Select lines");
 		JRadioButtonMenuItem objectSelectItem = new JRadioButtonMenuItem("Select objects");
+		JRadioButtonMenuItem allSelectItem = new JRadioButtonMenuItem("Select All");
+
 		JMenuItem setPerspectiveDepthItem = new JMenuItem("Set Perspective Depth");
 		JMenuItem addCubeItem = new JMenuItem("Load Cube");
 		JMenuItem addPyramidItem = new JMenuItem("Load Pyramid");
@@ -841,6 +933,12 @@ public class HighWire extends JPanel{
 		parallelIcon = new ImageIcon(HighWire.class.getResource("/Rhombus-64.png"));
 		lineSelectIcon = new ImageIcon(HighWire.class.getResource("/LineSelect.png"));
 		objectSelectIcon = new ImageIcon(HighWire.class.getResource("/ObjectSelect.png"));
+		eraserSelectedIcon = new ImageIcon(HighWire.class.getResource("/eraserIcon.png"));
+		eraserIcon  = new ImageIcon(HighWire.class.getResource("/eraserDeselectIcon.png"));
+		selectAllIcon  = new ImageIcon(HighWire.class.getResource("/selectAll.png"));
+		selectAllNonIcon  = new ImageIcon(HighWire.class.getResource("/selectAllNon.png"));
+
+
 		importButton = new JButton(new ImageIcon(HighWire.class.getResource("/Import-64.png")));
 		exportButton = new JButton(new ImageIcon(HighWire.class.getResource("/Export-64.png")));
 		projectionButton = new JButton(new ImageIcon(HighWire.class.getResource("/Rhombus-64.png")));
@@ -886,7 +984,24 @@ public class HighWire extends JPanel{
 		});
 		depthDialog.getRootPane().setDefaultButton(applyDepthButton);
 
-
+		ActionListener selectAllAction = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				selectAll = !selectAll;
+				if(selectAll){
+					for(int i = 0; i < lines.size(); i++){
+						lines.get(i).isEditable = true;
+					}
+					selectAllButton.setIcon(selectAllNonIcon);
+				}else{
+					for(int i = 0; i < lines.size(); i++){
+						lines.get(i).isEditable = false;
+					}
+					selectAllButton.setIcon(selectAllIcon);
+				}
+				scan.repaint();
+			}
+		};
 		ActionListener undoAction = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
@@ -924,7 +1039,9 @@ public class HighWire extends JPanel{
 						xRotateSlider.setValue(0);
 						yRotateSlider.setValue(0);
 						zRotateSlider.setValue(0);
-						lines = TransformPackage.inputLines3D(chooser.getSelectedFile());
+						history.add(TransformPackage.inputLines3D(chooser.getSelectedFile()).size());
+						lines.addAll(TransformPackage.inputLines3D(chooser.getSelectedFile()));
+
 						scan.repaint();
 					} catch (FileNotFoundException e) {
 						System.out.println("Error: File import failed.");
@@ -950,6 +1067,12 @@ public class HighWire extends JPanel{
 		ActionListener deleteAction = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
+				delete = !delete;
+				if(delete){
+					eraserButton.setIcon(eraserSelectedIcon);
+				}else{
+					eraserButton.setIcon(eraserIcon);
+				}
 			}
 
 		};
@@ -962,17 +1085,25 @@ public class HighWire extends JPanel{
 						selectButton.setIcon(lineSelectIcon);
 						lineSelectItem.setSelected(false);
 						objectSelectItem.setSelected(true);
+						selectButton.setToolTipText("Select single wires");
+						eraserButton.setToolTipText("Erase entire objects");
 					}else{
 						selectButton.setIcon(objectSelectIcon);
 						lineSelectItem.setSelected(true);
 						objectSelectItem.setSelected(false);
+						selectButton.setToolTipText("Select entire objects");
+						eraserButton.setToolTipText("Erase single wires");
 					}
 				}else if(evt.getSource() == lineSelectItem){
+					selectButton.setToolTipText("Select single wires");
+					eraserButton.setToolTipText("Erase entire objects");
 					lineSelectItem.setSelected(true);
 					objectSelectItem.setSelected(false);
 					selectObject = false;
 					selectButton.setIcon(objectSelectIcon);
 				}else if(evt.getSource() == objectSelectItem){
+					selectButton.setToolTipText("Select entire objects");
+					eraserButton.setToolTipText("Erase single wires");
 					lineSelectItem.setSelected(false);
 					objectSelectItem.setSelected(true);
 					selectObject = true;
@@ -1029,13 +1160,23 @@ public class HighWire extends JPanel{
 		projectionButton.addActionListener(projectionAction);
 		projectionButton.setToolTipText("Set Parallel Projection");
 
+		eraserButton.addActionListener(deleteAction);
+		eraserButton.setToolTipText("Erase entire objects");
+
 		selectButton.addActionListener(selectAction);
+		selectButton.setToolTipText("Select single wires");
+		
+		selectAllButton.addActionListener(selectAllAction);
+		selectAllButton.setToolTipText("Select All");
 		toolbar.add(importButton);
 		toolbar.add(exportButton);
 		toolbar.add(projectionButton);
 		toolbar.add(undoButton);
 		toolbar.addSeparator();
 		toolbar.add(selectButton);
+		toolbar.add(selectAllButton);
+		toolbar.addSeparator();
+		toolbar.add(eraserButton);
 
 		northPanel.add(toolbar);
 
@@ -1049,7 +1190,9 @@ public class HighWire extends JPanel{
 		exportItem.addActionListener(exportAction);
 		lineSelectItem.addActionListener(selectAction);
 		objectSelectItem.addActionListener(selectAction);
-
+		allSelectItem.addActionListener(selectAllAction);
+		allSelectItem.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_A, ActionEvent.CTRL_MASK));
 		undoItem.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
 		undoItem.addActionListener(undoAction);
@@ -1073,6 +1216,7 @@ public class HighWire extends JPanel{
 		editMenu.addSeparator();
 		editMenu.add(lineSelectItem);
 		editMenu.add(objectSelectItem);
+		editMenu.add(allSelectItem);
 		viewMenu.add(parallelItem);
 		viewMenu.add(perspectiveItem);
 		viewMenu.addSeparator();
