@@ -10,7 +10,7 @@ with different projections, edit objects with dynamic controls and specific matr
 |
 <b><a href="#features">Features</a></b>
 |
-<b><a href="#key shortcuts">Key Shortcuts</a></b>
+<b><a href="#hotkeys">Hotkeys</a></b>
 |
 <b><a href="#setup">Setup</a></b>
 |
@@ -48,7 +48,29 @@ What started as my curiosity with computer graphics solidified into ideas that b
 </p><p>
 <img align="left" src="https://github.com/jakewebber/HighWire3D/blob/master/res/selectAllNon.png" width="27" height="27">
 <b>Select All</b> wires in the scene to be editable or not. 
+</p>
 
-#Key Shortcuts
+
+#Hotkeys
+- **`ctrl + o`**: Import/Open
+- **`ctrl + s`**: Export/Save
+- **`ctrl + a`**: Select/Deselect all wires
+- **`ctrl + z`**: Undo last object addition
+- **`ctrl + n`**: Parallel projection
+- **`ctrl + m`**: Perspective projection
+- **`ctrl + d`**: Set perspective depth value
+- **`ctrl + LMB`**: Drag to translate objects along z-axis
+- **`ctrl + RMB`**: Drag to rotate objects along z-axis
+- **`LMB`**: Drag to translate objects on X-Y plane
+- **`RMB`**: Drag to rotate objects on X-Y plane
+- **`MMB`**: Scroll to increase/decrease scale on all axis
+
+
+#Setup
+<b>To run:</b> Download the executable JAR file of the packaged HighWire3D. 
+<p>HighWire3D was built in Ecipse Mars IDE and has project files supplied. Simply download HighWire3D as a zip and import as existing project into your Eclipse workspace to best view and edit the source code. 
+</p>
+
+
 
 ![Alt text](https://raw.githubusercontent.com/jakewebber/HighWire3D/master/houserotation.gif?raw=true "Demo")
