@@ -77,6 +77,11 @@ What started as my curiosity with computer graphics solidified into ideas that b
 <p>HighWire3D was built in Ecipse Mars IDE and has project files supplied. Simply download HighWire3D as a zip and import as existing project into your Eclipse workspace to best view and edit the source code. 
 </p>
 
+#Credits
+<p> <a href="http://math.nist.gov/javanumerics/jama/">JAMA: A Java Matrix Package</a> gives the matrix constructor from a double array and the basic matrix multiplication method needed to compute more complicated transformation matrices. 
+</p>
+<p>  <a href="https://icons8.com/">Icons8</a> provided the menu bar icons, and hosts tens of thousands more for free use. 
+
 
 
 ![Alt text](https://raw.githubusercontent.com/jakewebber/HighWire3D/master/houserotation.gif?raw=true "Demo")
