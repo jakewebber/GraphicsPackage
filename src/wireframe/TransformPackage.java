@@ -1,3 +1,6 @@
+// Jacob Webber
+// jacobwwebber@gmail.com
+
 package wireframe;
 import java.io.*;
 import java.util.ArrayList;
@@ -8,34 +11,8 @@ import Jama.*;
 
 public class TransformPackage {
 
-	static Matrix translate = new Matrix(new double[][]{
-		{1, 1, 1},
-		{1, 1, 1}, 
-		{1, 1, 1}
-	});
-
-	static Matrix rotate = new Matrix(new double[][]{
-		{1, 1, 1},
-		{1, 1, 1}, 
-		{1, 1, 1}
-	});
-
-	static Matrix scale = new Matrix(new double[][]{
-		{1, 1, 1},
-		{1, 1, 1}, 
-		{1, 1, 1}
-	});
-
-	Matrix transform = new Matrix(new double[][]{
-		{1, 1, 1},
-		{1, 1, 1}, 
-		{1, 1, 1}
-	});
-
 	public TransformPackage(){
 	}
-
-
 
 	/** ----------------------------------------------------------
 	 * rotate3D: Create a rotation matrix around the origin point (0, 0, 0)
@@ -44,7 +21,6 @@ public class TransformPackage {
 	 * @return a 4x4 3D rotation matrix */
 	public static Matrix rotate3D(double d, char axis){
 		d = Math.toRadians(d);
-
 		if(axis == 'x'){ //X AXIS ROTATION
 			return new Matrix(new double[][]{
 				{1, 	0,	 			0, 				0},
@@ -87,6 +63,7 @@ public class TransformPackage {
 		});
 
 	}
+	
 	/** ----------------------------------------------------------
 	 * scale3D: Create a scale matrix around the origin point (0, 0, 0)
 	 * in a 3D space either along the x, y, or z axis. 
@@ -102,7 +79,10 @@ public class TransformPackage {
 	}
 
 
-
+	/** ----------------------------------------------------------
+	 * perspectiveProjection: Create a perspective projection matrix to give 
+	 * distance to other matrix points. 
+	 * @return a 4x4 3D scaling matrix */
 	public static Matrix perspectiveProjection(double fovy, double aspect, double near, double far) {
 		double y2 = near * Math.tan(Math.toRadians(fovy));
 		double y1 = -y2;
@@ -147,12 +127,10 @@ public class TransformPackage {
 	 * applyTransformation: Apply a matrix transformation to a set of lines.
 	 * @param Matrix transformation - the transform Matrix to apply.
 	 * @param datalines: the array of lines to be transformed.
-	 * @return void, simply updates the array */
+	 * Access statically */
 	public static void applyTransformation(Matrix transformation, ArrayList<Line> dataLines){
 		for(int i = 0; i < dataLines.size(); i++){
 			Line line = dataLines.get(i);
-
-			/* Applying transformation */
 			if(line.isEditable){
 				Matrix p1 = transformation.times(line.p1);
 				Matrix p2 = transformation.times(line.p2);
@@ -160,6 +138,21 @@ public class TransformPackage {
 				dataLines.set(i, line);
 			}
 		}
+	}
+
+	/** ----------------------------------------------------------
+	 * applyTransformation: Apply a matrix transformation to a line.
+	 * @param Matrix transformation - the transform Matrix to apply.
+	 * @param line: the line to be transformed.
+	 * @return a transformed line */
+	public static Line applyTransformation(Matrix transformation, Line line){
+		/* Applying transformation */
+		if(line.isEditable){
+			Matrix p1 = transformation.times(line.p1);
+			Matrix p2 = transformation.times(line.p2);
+			line.setMatrices(p1,  p2);
+		}
+		return line;
 	}
 
 
@@ -203,7 +196,7 @@ public class TransformPackage {
 
 
 	/** ----------------------------------------------------------
-	 * outputLines: Create a new file from the Arraylist of lines 
+	 * exportLines: Create a new file from the Arraylist of lines 
 	 * that has been modified. Line coordinates are separated by spaces,
 	 * one line in the file corresponds to one line drawn.
 	 * @param filename: the name of the file to output to source folder
@@ -234,10 +227,10 @@ public class TransformPackage {
 
 
 	/** ----------------------------------------------------------
-	 * ArrayToString - convert a dou
-	 * ble array to an html formatted string
-	 * that is printable in a JLabel. 
-	 * @param matrix[][]: the double array to print */
+	 * ArrayToTable - convert a double array into a modified JTable, 
+	 * displayable in a JPanel.
+	 * @param matrix[][]: the double array to create a JTable from.
+	 * @return JTable of the corresponding matrix. */
 	public static JTable ArrayToTable(double matrix[][]) {
 		JTable table = new JTable();
 		//table.setTableHeader(null);
@@ -262,29 +255,5 @@ public class TransformPackage {
 		}
 		table.setModel(new javax.swing.table.DefaultTableModel(values, header));
 		return table;
-	}
-	/* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-	/* Starting main method */
-	public static void main(String[] args) {
-		ArrayList<Line> lines = DemoObjects.packageCube(0, 0, 0);
-
-		for(int i = 0; i < lines.size(); i++){
-			System.out.print(i + " --");
-			lines.get(i).print();
-		}
-		Matrix rotate = rotate3D(360, 'x');
-		System.out.println("applying transformation...");
-		applyTransformation(rotate, lines);
-		System.out.println("done.");
-
-		for(int i = 0; i < lines.size(); i++){
-			System.out.print(i + " --");
-			lines.get(i).print();
-		}
-
-		// m = rows
-		// n = cols
-
-
 	}
 }

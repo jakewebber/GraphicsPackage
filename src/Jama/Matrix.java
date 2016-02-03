@@ -4,7 +4,6 @@ import java.text.NumberFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
-import java.text.FieldPosition;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.StreamTokenizer;
@@ -489,13 +488,6 @@ public class Matrix implements Cloneable, java.io.Serializable {
       return f;
    }
 
-   /** Two norm
-   @return    maximum singular value.
-   */
-
-   public double norm2 () {
-      return (new SingularValueDecomposition(this).norm2());
-   }
 
    /** Infinity norm
    @return    maximum row sum.
@@ -778,34 +770,6 @@ public class Matrix implements Cloneable, java.io.Serializable {
    public QRDecomposition qr () {
       return new QRDecomposition(this);
    }
-
-   /** Cholesky Decomposition
-   @return     CholeskyDecomposition
-   @see CholeskyDecomposition
-   */
-
-   public CholeskyDecomposition chol () {
-      return new CholeskyDecomposition(this);
-   }
-
-   /** Singular Value Decomposition
-   @return     SingularValueDecomposition
-   @see SingularValueDecomposition
-   */
-
-   public SingularValueDecomposition svd () {
-      return new SingularValueDecomposition(this);
-   }
-
-   /** Eigenvalue Decomposition
-   @return     EigenvalueDecomposition
-   @see EigenvalueDecomposition
-   */
-
-   public EigenvalueDecomposition eig () {
-      return new EigenvalueDecomposition(this);
-   }
-
    /** Solve A*X = B
    @param B    right hand side
    @return     solution if A is square, least squares solution otherwise
@@ -841,21 +805,6 @@ public class Matrix implements Cloneable, java.io.Serializable {
       return new LUDecomposition(this).det();
    }
 
-   /** Matrix rank
-   @return     effective numerical rank, obtained from SVD.
-   */
-
-   public int rank () {
-      return new SingularValueDecomposition(this).rank();
-   }
-
-   /** Matrix condition (2 norm)
-   @return     ratio of largest to smallest singular value.
-   */
-
-   public double cond () {
-      return new SingularValueDecomposition(this).cond();
-   }
 
    /** Matrix trace.
    @return     sum of the diagonal elements.
