@@ -37,6 +37,9 @@ What started as my curiosity with computer graphics solidified into ideas that b
 <img align="left" src="https://github.com/jakewebber/HighWire3D/blob/master/res/Rhombus-64.png" width="30" height="30">
 <b>Parallel Project</b> the wire scene, giving infinite focal length and essentially 'flattening' the z-axis. Useful for blueprints and aligning wires. 
 </p><p>
+<img align="left" src="https://raw.githubusercontent.com/jakewebber/HighWire3D/master/res/copy.png" width="27" height="27">
+<b>Copy</b> all selected wires and objects, spawning the duplication translated 50x and 50y as one new unified. 
+</p><p>
 <img align="left" src="https://github.com/jakewebber/HighWire3D/blob/master/res/Undo.png" width="30" height="30">
 <b>Undo</b> the last complete addition to the scene, from a single wire to a fresh concatenated import. 
 </p><p>
@@ -49,12 +52,15 @@ What started as my curiosity with computer graphics solidified into ideas that b
 <img align="left" src="https://github.com/jakewebber/HighWire3D/blob/master/res/selectAllNon.png" width="27" height="27">
 <b>Select All</b> wires in the scene to be editable or not. 
 </p>
-
+<img align="left" src="https://raw.githubusercontent.com/jakewebber/HighWire3D/master/res/screenshot.png" width="30" height="30">
+<b>Screenshot</b> The current state of the scene and save as a jpg or png. 
+</p>
 
 #Hotkeys
 - **`ctrl + o`**: Import/Open
 - **`ctrl + s`**: Export/Save
 - **`ctrl + a`**: Select/Deselect all wires
+- **`ctrl + c`**: Copy all selected wires as a new object
 - **`ctrl + z`**: Undo last object addition
 - **`ctrl + n`**: Parallel projection
 - **`ctrl + m`**: Perspective projection
