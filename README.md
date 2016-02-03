@@ -1,6 +1,8 @@
 <p align="center">
 <img align="center" src="https://raw.githubusercontent.com/jakewebber/HighWire3D/master/highwirelogo.png" width="800" height="200">
 </p>
+![Alt text](https://raw.githubusercontent.com/jakewebber/HighWire3D/master/houserotation.gif "Demo")
+
 #HighWire3D
 <p align="center">
 Model 3D wireframe scenes 
@@ -80,8 +82,4 @@ What started as my curiosity with computer graphics solidified into ideas that b
 #Credits
 <p> <a href="http://math.nist.gov/javanumerics/jama/">JAMA: A Java Matrix Package</a> gives the matrix constructor from a double array and the basic matrix multiplication method needed to compute more complicated transformation matrices. 
 </p>
-<p>  <a href="https://icons8.com/">Icons8</a> provided the menu bar icons, and hosts tens of thousands more for free use. 
-
-
-
-![Alt text](https://raw.githubusercontent.com/jakewebber/HighWire3D/master/houserotation.gif?raw=true "Demo")
+<p>  <a href="https://icons8.com/">Icons8</a> provided the menu bar icons, and hosts tens of thousands more for free use.
