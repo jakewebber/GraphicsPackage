@@ -1,9 +1,6 @@
 <p align="center">
 <img align="center" src="https://raw.githubusercontent.com/jakewebber/HighWire3D/master/highwirelogo.png" width="800" height="200">
 </p>
-![Alt text](https://raw.githubusercontent.com/jakewebber/HighWire3D/master/houserotation.gif "Demo")
-
-#HighWire3D
 <p align="center">
 Model 3D wireframe scenes 
 with different projections, edit objects with dynamic controls and specific matrix transformations, and import or export as a simple CSV. </p>
@@ -19,8 +16,8 @@ with different projections, edit objects with dynamic controls and specific matr
 <b><a href="#structure">Structure</a></b>
 |
 <b><a href="#credits">Credits</a></b>
-
 </p>
+![Alt text](https://raw.githubusercontent.com/jakewebber/HighWire3D/master/houserotation.gif "Demo")
 
 #Overview
 What started as my curiosity with computer graphics solidified into ideas that built this 3D graphics editor. It's built on top of Java's graphics package - no preexisting 3D Java APIs went into creating the scene - using an original backend transformation class, custom line class and GUI. It is capable of translation, scale, and rotation of wire objects along the x, y, and z axis in a 3 dimensional space. Transformations are concatenated using matrix functions and applied to lines stored in a 3D space as separate matrices. All matrices are handled in the <a href="http://math.nist.gov/javanumerics/jama/">Jama Matrix package</a> for instantiating a matrix data structure and computing simple low-level matrix math (such as multiplication and inversion) within the graphic transformations. All GUI Components are Java Swing. 
