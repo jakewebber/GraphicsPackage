@@ -72,7 +72,7 @@ What started as my curiosity with computer graphics solidified into ideas that b
 
 
 #Setup
-<b>To run:</b> Download the executable JAR file of the packaged HighWire3D. 
+<b>To run:</b> __<a href="https://github.com/jakewebber/HighWire3D/raw/master/HighWire3D.jar">Download</a>__ the executable JAR file of the packaged HighWire3D. 
 <p>HighWire3D was built in Ecipse Mars IDE and has project files supplied. Simply download HighWire3D as a zip and import as existing project into your Eclipse workspace to best view and edit the source code. 
 </p>
 
