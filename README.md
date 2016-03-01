@@ -56,19 +56,19 @@ What started as my curiosity with computer graphics solidified into ideas that b
 </p>
 
 #Hotkeys
-- **`ctrl + o`**: Import/Open
-- **`ctrl + s`**: Export/Save
-- **`ctrl + a`**: Select/Deselect all wires
-- **`ctrl + c`**: Copy all selected wires as a new object
-- **`ctrl + z`**: Undo last object addition
-- **`ctrl + n`**: Parallel projection
-- **`ctrl + m`**: Perspective projection
-- **`ctrl + d`**: Set perspective depth value
-- **`ctrl + LMB`**: Drag to translate objects along z-axis
-- **`ctrl + RMB`**: Drag to rotate objects along z-axis
-- **`LMB`**: Drag to translate objects on X-Y plane
-- **`RMB`**: Drag to rotate objects on X-Y plane
-- **`MMB`**: Scroll to increase/decrease scale on all axis
+- <kbd>Ctrl</kbd> <kbd>O</kbd>: Import/Open
+- <kbd>Ctrl</kbd> <kbd>S</kbd>: Export/Save
+- <kbd>Ctrl</kbd> <kbd>A</kbd>: Select/Deselect all wires
+- <kbd>Ctrl</kbd> <kbd>C</kbd>: Copy all selected wires as a new object
+- <kbd>Ctrl</kbd> <kbd>Z</kbd>: Undo last object addition
+- <kbd>Ctrl</kbd> <kbd>N</kbd>: Parallel projection
+- <kbd>Ctrl</kbd><kbd>M</kbd>: Perspective projection
+- <kbd>Ctrl</kbd> <kbd>D</kbd>: Set perspective depth value
+- <kbd>Ctrl</kbd> <kbd>LMB</kbd>: Drag to translate objects along z-axis
+- <kbd>Ctrl</kbd>l <kbd>RMB</kbd>: Drag to rotate objects along z-axis
+- <kbd>LMB</kbd>: Drag to translate objects on X-Y plane
+- <kbd>RMB</kbd>: Drag to rotate objects on X-Y plane
+- <kbd>MMB</kbd>: Scroll to increase/decrease scale on all axis
 
 
 #Setup
