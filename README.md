@@ -1,7 +1,4 @@
-<A NAME="top">
-
-
-
+<a name="readme">
 <p align="center">
 <img align="center" src="https://raw.githubusercontent.com/jakewebber/HighWire3D/master/highwirelogo.png" width="800" height="200">
 </p>
