@@ -66,7 +66,7 @@ What started as my curiosity with computer graphics solidified into ideas that b
 - <kbd>Ctrl</kbd><kbd>M</kbd>: Perspective projection
 - <kbd>Ctrl</kbd> <kbd>D</kbd>: Set perspective depth value
 - <kbd>Ctrl</kbd> <kbd>LMB</kbd>: Drag to translate objects along z-axis
-- <kbd>Ctrl</kbd>l <kbd>RMB</kbd>: Drag to rotate objects along z-axis
+- <kbd>Ctrl</kbd> <kbd>RMB</kbd>: Drag to rotate objects along z-axis
 - <kbd>LMB</kbd>: Drag to translate objects on X-Y plane
 - <kbd>RMB</kbd>: Drag to rotate objects on X-Y plane
 - <kbd>MMB</kbd>: Scroll to increase/decrease scale on all axis
