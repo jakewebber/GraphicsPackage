@@ -18,12 +18,12 @@ with different projections, edit objects with dynamic controls and specific matr
 |
 <b><a href="#credits">Credits</a></b>
 </p>
-![Alt text](https://raw.githubusercontent.com/jakewebber/HighWire3D/master/houserotation.gif "Demo")
+<img align="center" src="https://raw.githubusercontent.com/jakewebber/HighWire3D/master/houserotation.gif">
 
-#Overview
+# Overview
 What started as my curiosity with computer graphics solidified into ideas that built this 3D graphics editor. It's built on top of Java's graphics package - no preexisting 3D Java APIs went into creating the scene - using an original backend transformation class, custom line class and GUI. It is capable of translation, scale, and rotation of wire objects along the x, y, and z axis in a 3 dimensional space. Transformations are concatenated using matrix functions and applied to lines stored in a 3D space as separate matrices. All matrices are handled in the <a href="http://math.nist.gov/javanumerics/jama/">Jama Matrix package</a> for instantiating a matrix data structure and computing simple low-level matrix math (such as multiplication and inversion) within the graphic transformations. All GUI Components are Java Swing. 
 
-#Features
+# Features
 <p>
 <img align="left" src="https://raw.githubusercontent.com/jakewebber/HighWire3D/master/res/Import-64.png" width="30" height="30">
 <b>Import</b> new wires from a CSV file or other basic text format. 
@@ -56,7 +56,7 @@ What started as my curiosity with computer graphics solidified into ideas that b
 <b>Screenshot</b> The current state of the scene and save as a jpg or png. 
 </p>
 
-#Hotkeys
+# Hotkeys
 - <kbd>Ctrl</kbd> <kbd>O</kbd>: Import/Open
 - <kbd>Ctrl</kbd> <kbd>S</kbd>: Export/Save
 - <kbd>Ctrl</kbd> <kbd>A</kbd>: Select/Deselect all wires
@@ -72,12 +72,12 @@ What started as my curiosity with computer graphics solidified into ideas that b
 - <kbd>MMB</kbd>: Scroll to increase/decrease scale on all axis
 
 
-#Setup
+# Setup
 <b>To run:</b> __<a href="https://github.com/jakewebber/HighWire3D/raw/master/HighWire3D.jar">Download</a>__ the executable JAR file of the packaged HighWire3D. 
 <p>HighWire3D was built in Ecipse Mars IDE and has project files supplied. Simply download HighWire3D as a zip and import as existing project into your Eclipse workspace to best view and edit the source code. 
 </p>
 
-#Credits
+# Credits
 <p> <a href="http://math.nist.gov/javanumerics/jama/">JAMA: A Java Matrix Package</a> gives the matrix constructor from a double array and the basic matrix multiplication method needed to compute more complicated transformation matrices. 
 </p>
 <p>  <a href="https://icons8.com/">Icons8</a> provided the menu bar icons, and hosts tens of thousands more for free use.
